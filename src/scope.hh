@@ -4,8 +4,7 @@
 #include "unique_ptr.hh"
 #include "utils.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 class AliasRegistry;
 class FaceRegistry;
@@ -15,48 +14,46 @@ class KeymapManager;
 class OptionManager;
 class OptionsRegistry;
 
-class Scope
-{
+class Scope {
 public:
-    Scope(Scope& parent);
-    ~Scope();
+	Scope(Scope& parent);
+	~Scope();
 
-    OptionManager&       options();
-    const OptionManager& options() const;
-    HookManager&         hooks();
-    const HookManager&   hooks() const;
-    KeymapManager&       keymaps();
-    const KeymapManager& keymaps() const;
-    AliasRegistry&       aliases();
-    const AliasRegistry& aliases() const;
-    FaceRegistry&        faces();
-    const FaceRegistry&  faces() const;
-    Highlighters&        highlighters();
-    const Highlighters&  highlighters() const;
+	OptionManager& options();
+	const OptionManager& options() const;
+	HookManager& hooks();
+	const HookManager& hooks() const;
+	KeymapManager& keymaps();
+	const KeymapManager& keymaps() const;
+	AliasRegistry& aliases();
+	const AliasRegistry& aliases() const;
+	FaceRegistry& faces();
+	const FaceRegistry& faces() const;
+	Highlighters& highlighters();
+	const Highlighters& highlighters() const;
 
-    void reparent(Scope& parent);
+	void reparent(Scope& parent);
 
 private:
-    friend class GlobalScope;
-    Scope();
-    struct Data;
-    UniquePtr<Data> m_data;
+	friend class GlobalScope;
+	Scope();
+	struct Data;
+	UniquePtr<Data> m_data;
 };
 
-class GlobalScope : public Scope, public Singleton<GlobalScope>
-{
+class GlobalScope : public Scope, public Singleton<GlobalScope> {
 public:
-    GlobalScope();
-    ~GlobalScope();
+	GlobalScope();
+	~GlobalScope();
 
-    OptionsRegistry& option_registry();
-    const OptionsRegistry& option_registry() const;
+	OptionsRegistry& option_registry();
+	const OptionsRegistry& option_registry() const;
 
 private:
-    struct GlobalData;
-    UniquePtr<GlobalData> m_global_data;
+	struct GlobalData;
+	UniquePtr<GlobalData> m_global_data;
 };
 
-}
+} // namespace Kakoune
 
 #endif // scope_hh_INCLUDED

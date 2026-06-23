@@ -3,25 +3,21 @@
 
 #include <cstddef>
 
-namespace Kakoune
-{
+namespace Kakoune {
 
-template<typename T>
-struct Range
-{
-    T begin;
-    T end;
+template <typename T> struct Range {
+	T begin;
+	T end;
 
-    friend bool operator==(const Range& lhs, const Range& rhs) = default;
+	friend bool operator==(const Range& lhs, const Range& rhs) = default;
 
-    friend size_t hash_value(const Range& range)
-    {
-        return hash_values(range.begin, range.end);
-    }
+	friend size_t hash_value(const Range& range) {
+		return hash_values(range.begin, range.end);
+	}
 
-    bool empty() const { return begin == end; }
+	bool empty() const { return begin == end; }
 };
 
-}
+} // namespace Kakoune
 
 #endif // range_hh_INCLUDED

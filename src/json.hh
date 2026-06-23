@@ -6,8 +6,7 @@
 #include "string_utils.hh"
 #include "value.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 using JsonArray = Vector<Value>;
 using JsonObject = HashMap<String, Value>;
@@ -16,27 +15,35 @@ String to_json(int i);
 String to_json(bool b);
 String to_json(StringView str);
 
-template<typename T>
-String to_json(ArrayView<const T> array)
-{
-    return "[" + join(array | transform([](auto&& elem) { return to_json(elem); }), ", ") + "]";
+template <typename T> String to_json(ArrayView<const T> array) {
+	return "[" +
+	       join(array | transform([](auto&& elem) { return to_json(elem); }),
+	            ", ") +
+	       "]";
 }
 
-template<typename T, MemoryDomain D>
-String to_json(const Vector<T, D>& vec) { return to_json(ArrayView<const T>{vec}); }
-
-template<typename K, typename V, MemoryDomain D>
-String to_json(const HashMap<K, V, D>& map)
-{
-    return "{" + join(map | transform([](auto&& i) { return format("{}: {}", to_json(i.key), to_json(i.value)); }),
-                      ',', false) + "}";
+template <typename T, MemoryDomain D> String to_json(const Vector<T, D>& vec) {
+	return to_json(ArrayView<const T>{vec});
 }
 
-struct JsonResult { Value value; const char* new_pos; };
+template <typename K, typename V, MemoryDomain D>
+String to_json(const HashMap<K, V, D>& map) {
+	return "{" +
+	       join(map | transform([](auto&& i) {
+		            return format("{}: {}", to_json(i.key), to_json(i.value));
+	            }),
+	            ',', false) +
+	       "}";
+}
+
+struct JsonResult {
+	Value value;
+	const char* new_pos;
+};
 
 JsonResult parse_json(const char* pos, const char* end);
 JsonResult parse_json(StringView json);
 
-}
+} // namespace Kakoune
 
 #endif // json_hh_INCLUDED

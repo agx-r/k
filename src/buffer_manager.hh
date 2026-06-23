@@ -2,48 +2,49 @@
 #define buffer_manager_hh_INCLUDED
 
 #include "buffer.hh"
-#include "vector.hh"
-#include "utils.hh"
 #include "unique_ptr.hh"
+#include "utils.hh"
+#include "vector.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
-class BufferManager : public Singleton<BufferManager>
-{
+class BufferManager : public Singleton<BufferManager> {
 public:
-    using BufferList = Vector<UniquePtr<Buffer>, MemoryDomain::BufferMeta>;
-    using iterator = BufferList::const_iterator;
+	using BufferList = Vector<UniquePtr<Buffer>, MemoryDomain::BufferMeta>;
+	using iterator = BufferList::const_iterator;
 
-    ~BufferManager();
+	~BufferManager();
 
-    Buffer* create_buffer(String name, Buffer::Flags flags, BufferLines lines, ByteOrderMark bom, EolFormat eolformat, FinalEol finaleol, FsStatus fs_status);
+	Buffer* create_buffer(String name, Buffer::Flags flags, BufferLines lines,
+	                      ByteOrderMark bom, EolFormat eolformat,
+	                      FinalEol finaleol, FsStatus fs_status);
 
-    void delete_buffer(Buffer& buffer);
+	void delete_buffer(Buffer& buffer);
 
-    iterator begin() const { return m_buffers.cbegin(); }
-    iterator end() const { return m_buffers.cend(); }
-    size_t   count() const { return m_buffers.size(); }
+	iterator begin() const { return m_buffers.cbegin(); }
+	iterator end() const { return m_buffers.cend(); }
+	size_t count() const { return m_buffers.size(); }
 
-    Buffer* get_buffer_ifp(StringView name);
-    Buffer& get_buffer(StringView name);
+	Buffer* get_buffer_ifp(StringView name);
+	Buffer& get_buffer(StringView name);
 
-    Buffer* get_buffer_matching_ifp(const FunctionRef<bool (Buffer&)>& filter);
-    Buffer& get_buffer_matching(const FunctionRef<bool (Buffer&)>& filter);
+	Buffer* get_buffer_matching_ifp(const FunctionRef<bool(Buffer&)>& filter);
+	Buffer& get_buffer_matching(const FunctionRef<bool(Buffer&)>& filter);
 
-    void make_latest(Buffer& buffer);
-    void arrange_buffers(ConstArrayView<String> buffers, bool to_back);
+	void make_latest(Buffer& buffer);
+	void arrange_buffers(ConstArrayView<String> buffers, bool to_back);
 
-    Buffer& get_first_buffer();
+	Buffer& get_first_buffer();
 
-    void backup_modified_buffers();
+	void backup_modified_buffers();
 
-    void clear_buffer_trash();
+	void clear_buffer_trash();
+
 private:
-    BufferList m_buffers;
-    BufferList m_buffer_trash;
+	BufferList m_buffers;
+	BufferList m_buffer_trash;
 };
 
-}
+} // namespace Kakoune
 
 #endif // buffer_manager_hh_INCLUDED

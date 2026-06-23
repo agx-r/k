@@ -1,7 +1,6 @@
 #include "memory.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 MemoryStats memory_stats[(size_t)MemoryDomain::Count] = {};
 

@@ -1,69 +1,60 @@
 #ifndef json_ui_hh_INCLUDED
 #define json_ui_hh_INCLUDED
 
-#include "user_interface.hh"
-#include "event_manager.hh"
 #include "coord.hh"
+#include "event_manager.hh"
 #include "string.hh"
+#include "user_interface.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 struct Value;
 
-class JsonUI : public UserInterface
-{
+class JsonUI : public UserInterface {
 public:
-    JsonUI();
+	JsonUI();
 
-    JsonUI(const JsonUI&) = delete;
-    JsonUI& operator=(const JsonUI&) = delete;
+	JsonUI(const JsonUI&) = delete;
+	JsonUI& operator=(const JsonUI&) = delete;
 
-    bool is_ok() const override { return m_stdin_watcher.fd() != -1; }
+	bool is_ok() const override { return m_stdin_watcher.fd() != -1; }
 
-    void draw(const DisplayBuffer& display_buffer,
-              DisplayCoord cursor_pos,
-              const Face& default_face,
-              const Face& buffer_padding,
-              ColumnCount widget_columns) override;
+	void draw(const DisplayBuffer& display_buffer, DisplayCoord cursor_pos,
+	          const Face& default_face, const Face& buffer_padding,
+	          ColumnCount widget_columns) override;
 
-    void draw_status(const DisplayLine& prompt,
-                     const DisplayLine& content,
-                     const ColumnCount cursor_pos,
-                     const DisplayLine& mode_line,
-                     const Face& default_face,
-                     StatusStyle style) override;
+	void draw_status(const DisplayLine& prompt, const DisplayLine& content,
+	                 const ColumnCount cursor_pos, const DisplayLine& mode_line,
+	                 const Face& default_face, StatusStyle style) override;
 
-    void menu_show(ConstArrayView<DisplayLine> items,
-                   DisplayCoord anchor, Face fg, Face bg,
-                   MenuStyle style) override;
-    void menu_select(int selected) override;
-    void menu_hide() override;
+	void menu_show(ConstArrayView<DisplayLine> items, DisplayCoord anchor,
+	               Face fg, Face bg, MenuStyle style) override;
+	void menu_select(int selected) override;
+	void menu_hide() override;
 
-    void info_show(const DisplayLine& title, const DisplayLineList& content,
-                   DisplayCoord anchor, Face face,
-                   InfoStyle style) override;
-    void info_hide() override;
+	void info_show(const DisplayLine& title, const DisplayLineList& content,
+	               DisplayCoord anchor, Face face, InfoStyle style) override;
+	void info_hide() override;
 
-    void refresh(bool force) override;
+	void refresh(bool force) override;
 
-    DisplayCoord dimensions() override;
-    void set_on_key(OnKeyCallback callback) override;
-    void set_on_paste(OnPasteCallback callback) override;
-    void set_ui_options(const Options& options) override;
+	DisplayCoord dimensions() override;
+	void set_on_key(OnKeyCallback callback) override;
+	void set_on_paste(OnPasteCallback callback) override;
+	void set_ui_options(const Options& options) override;
 
 private:
-    void parse_requests(EventMode mode);
-    void eval_json(const Value& value);
+	void parse_requests(EventMode mode);
+	void eval_json(const Value& value);
 
-    FDWatcher m_stdin_watcher;
-    OnKeyCallback m_on_key;
-    OnPasteCallback m_on_paste;
-    Vector<Key, MemoryDomain::Client> m_pending_keys;
-    DisplayCoord m_dimensions;
-    String m_requests;
+	FDWatcher m_stdin_watcher;
+	OnKeyCallback m_on_key;
+	OnPasteCallback m_on_paste;
+	Vector<Key, MemoryDomain::Client> m_pending_keys;
+	DisplayCoord m_dimensions;
+	String m_requests;
 };
 
-}
+} // namespace Kakoune
 
 #endif // json_ui_hh_INCLUDED

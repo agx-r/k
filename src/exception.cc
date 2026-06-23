@@ -4,12 +4,8 @@
 
 #include <typeinfo>
 
-namespace Kakoune
-{
+namespace Kakoune {
 
-StringView exception::what() const
-{
-    return typeid(*this).name();
-}
+StringView exception::what() const { return typeid(*this).name(); }
 
-}
+} // namespace Kakoune

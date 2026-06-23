@@ -1,2 +1,1 @@
-set print pretty
-break Kakoune::on_assert_failed
+set print pretty break Kakoune::on_assert_failed

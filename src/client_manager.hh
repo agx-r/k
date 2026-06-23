@@ -4,65 +4,64 @@
 #include "client.hh"
 #include "completion.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
-struct WindowAndSelections
-{
-    UniquePtr<Window> window;
-    SelectionList selections;
+struct WindowAndSelections {
+	UniquePtr<Window> window;
+	SelectionList selections;
 };
 
-class ClientManager : public Singleton<ClientManager>
-{
+class ClientManager : public Singleton<ClientManager> {
 public:
-    ClientManager();
-    ~ClientManager();
+	ClientManager();
+	~ClientManager();
 
-    Client* create_client(UniquePtr<UserInterface>&& ui, int pid,
-                          String name, EnvVarMap env_vars, StringView init_cmds,
-                          StringView init_buffer, Optional<BufferCoord> init_coord,
-                          Client::OnExitCallback on_exit);
+	Client* create_client(UniquePtr<UserInterface>&& ui, int pid, String name,
+	                      EnvVarMap env_vars, StringView init_cmds,
+	                      StringView init_buffer,
+	                      Optional<BufferCoord> init_coord,
+	                      Client::OnExitCallback on_exit);
 
-    bool   empty() const { return m_clients.empty(); }
-    size_t count() const { return m_clients.size(); }
+	bool empty() const { return m_clients.empty(); }
+	size_t count() const { return m_clients.size(); }
 
-    void clear(bool exit);
+	void clear(bool exit);
 
-    void ensure_no_client_uses_buffer(Buffer& buffer);
+	void ensure_no_client_uses_buffer(Buffer& buffer);
 
-    WindowAndSelections get_free_window(Buffer& buffer);
-    void add_free_window(UniquePtr<Window>&& window, SelectionList selections);
+	WindowAndSelections get_free_window(Buffer& buffer);
+	void add_free_window(UniquePtr<Window>&& window, SelectionList selections);
 
-    void redraw_clients() const;
-    bool process_pending_inputs();
-    bool has_pending_inputs() const;
+	void redraw_clients() const;
+	bool process_pending_inputs();
+	bool has_pending_inputs() const;
 
-    Client*  get_client_ifp(StringView name);
-    Client&  get_client(StringView name);
-    bool client_name_exists(StringView name) const;
-    void remove_client(Client& client, bool graceful, int status);
+	Client* get_client_ifp(StringView name);
+	Client& get_client(StringView name);
+	bool client_name_exists(StringView name) const;
+	void remove_client(Client& client, bool graceful, int status);
 
-    using ClientList = Vector<UniquePtr<Client>, MemoryDomain::Client>;
-    using iterator = ClientList::const_iterator;
+	using ClientList = Vector<UniquePtr<Client>, MemoryDomain::Client>;
+	using iterator = ClientList::const_iterator;
 
-    iterator begin() const { return m_clients.begin(); }
-    iterator end() const { return m_clients.end(); }
+	iterator begin() const { return m_clients.begin(); }
+	iterator end() const { return m_clients.end(); }
 
-    CandidateList complete_client_name(StringView name,
-                                       ByteCount cursor_pos = -1) const;
+	CandidateList complete_client_name(StringView name,
+	                                   ByteCount cursor_pos = -1) const;
 
-    void clear_window_trash();
-    void clear_client_trash();
+	void clear_window_trash();
+	void clear_client_trash();
+
 private:
-    String generate_name() const;
+	String generate_name() const;
 
-    ClientList m_clients;
-    ClientList m_client_trash;
-    Vector<WindowAndSelections, MemoryDomain::Client> m_free_windows;
-    Vector<UniquePtr<Window>, MemoryDomain::Client> m_window_trash;
+	ClientList m_clients;
+	ClientList m_client_trash;
+	Vector<WindowAndSelections, MemoryDomain::Client> m_free_windows;
+	Vector<UniquePtr<Window>, MemoryDomain::Client> m_window_trash;
 };
 
-}
+} // namespace Kakoune
 
 #endif // client_manager_hh_INCLUDED

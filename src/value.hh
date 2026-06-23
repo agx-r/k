@@ -8,80 +8,72 @@
 #include <type_traits>
 #include <typeinfo>
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 struct bad_value_cast {};
 
-struct Value
-{
-    Value() = default;
+struct Value {
+	Value() = default;
 
-    template<typename T> requires (not std::is_same_v<Value, T>)
-    Value(T&& val)
-        : m_value{new Model<std::remove_cvref_t<T>>{std::forward<T>(val)}} {}
+	template <typename T>
+	    requires(not std::is_same_v<Value, T>)
+	Value(T&& val)
+	    : m_value{new Model<std::remove_cvref_t<T>>{std::forward<T>(val)}} {}
 
-    template<typename T>
-    Value(Meta::Type<T>, auto&&... args) :
-        m_value(new Model<T>(std::forward<decltype(args)>(args)...)) {}
+	template <typename T>
+	Value(Meta::Type<T>, auto&&... args)
+	    : m_value(new Model<T>(std::forward<decltype(args)>(args)...)) {}
 
-    Value(const Value& val) = delete;
-    Value(Value&&) = default;
+	Value(const Value& val) = delete;
+	Value(Value&&) = default;
 
-    Value& operator=(const Value& val) = delete;
-    Value& operator=(Value&& val) = default;
+	Value& operator=(const Value& val) = delete;
+	Value& operator=(Value&& val) = default;
 
-    explicit operator bool() const { return (bool)m_value; }
+	explicit operator bool() const { return (bool)m_value; }
 
-    template<typename T>
-    bool is_a() const
-    {
-        return m_value and m_value->type() == typeid(T);
-    }
+	template <typename T> bool is_a() const {
+		return m_value and m_value->type() == typeid(T);
+	}
 
-    template<typename T>
-    T& as()
-    {
-        if (not is_a<T>())
-            throw bad_value_cast{};
-        return static_cast<Model<T>*>(m_value.get())->m_content;
-    }
+	template <typename T> T& as() {
+		if (not is_a<T>())
+			throw bad_value_cast{};
+		return static_cast<Model<T>*>(m_value.get())->m_content;
+	}
 
-    template<typename T>
-    const T& as() const
-    {
-        return const_cast<Value*>(this)->as<T>();
-    }
+	template <typename T> const T& as() const {
+		return const_cast<Value*>(this)->as<T>();
+	}
 
 private:
-    struct Concept
-    {
-        virtual ~Concept() = default;
-        virtual const std::type_info& type() const = 0;
-    };
+	struct Concept {
+		virtual ~Concept() = default;
+		virtual const std::type_info& type() const = 0;
+	};
 
-    template<typename T>
-    struct Model : public Concept, public UseMemoryDomain<MemoryDomain::Values>
-    {
-        Model(auto&&... args) : m_content(std::forward<decltype(args)>(args)...) {}
-        const std::type_info& type() const override { return typeid(T); }
+	template <typename T>
+	struct Model : public Concept,
+	               public UseMemoryDomain<MemoryDomain::Values> {
+		Model(auto&&... args)
+		    : m_content(std::forward<decltype(args)>(args)...) {}
+		const std::type_info& type() const override { return typeid(T); }
 
-        T m_content;
-    };
+		T m_content;
+	};
 
-    UniquePtr<Concept> m_value;
+	UniquePtr<Concept> m_value;
 };
 
 enum class ValueId : int {};
 
-inline ValueId get_free_value_id()
-{
-    static int next = 0;
-    return (ValueId)(next++);
+inline ValueId get_free_value_id() {
+	static int next = 0;
+	return (ValueId)(next++);
 }
 
 using ValueMap = HashMap<ValueId, Value, MemoryDomain::Values>;
 
-}
+} // namespace Kakoune
 
 #endif // value_hh_INCLUDED

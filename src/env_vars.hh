@@ -3,14 +3,13 @@
 
 #include "hash_map.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 class String;
 using EnvVarMap = HashMap<String, String, MemoryDomain::EnvVars>;
 
 EnvVarMap get_env_vars();
 
-}
+} // namespace Kakoune
 
 #endif // env_vars_hh_INCLUDED

@@ -6,86 +6,86 @@
 #include "option.hh"
 #include "optional.hh"
 #include "safe_ptr.hh"
-#include "selection.hh"
 #include "scope.hh"
+#include "selection.hh"
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 enum class Hook;
 class Client;
 
 // A Window is a view onto a Buffer
-class Window final : public SafeCountable, public Scope, private OptionWatcher
-{
+class Window final : public SafeCountable, public Scope, private OptionWatcher {
 public:
-    Window(Buffer& buffer);
-    ~Window();
+	Window(Buffer& buffer);
+	~Window();
 
-    const DisplayCoord& position() const { return m_position; }
-    void set_position(DisplayCoord position);
+	const DisplayCoord& position() const { return m_position; }
+	void set_position(DisplayCoord position);
 
-    const DisplayCoord& dimensions() const { return m_dimensions; }
-    void set_dimensions(DisplayCoord dimensions);
+	const DisplayCoord& dimensions() const { return m_dimensions; }
+	void set_dimensions(DisplayCoord dimensions);
 
-    void scroll(LineCount offset);
-    void center_line(LineCount buffer_line);
-    void display_line_at(LineCount buffer_line, LineCount display_line);
+	void scroll(LineCount offset);
+	void center_line(LineCount buffer_line);
+	void display_line_at(LineCount buffer_line, LineCount display_line);
 
-    void scroll(ColumnCount offset);
-    void center_column(ColumnCount buffer_column);
-    void display_column_at(ColumnCount buffer_column, ColumnCount display_column);
+	void scroll(ColumnCount offset);
+	void center_column(ColumnCount buffer_column);
+	void display_column_at(ColumnCount buffer_column,
+	                       ColumnCount display_column);
 
-    const DisplayBuffer& update_display_buffer(const Context& context);
+	const DisplayBuffer& update_display_buffer(const Context& context);
 
-    Optional<DisplayCoord> display_coord(BufferCoord coord) const;
-    Optional<BufferCoord> buffer_coord(DisplayCoord coord) const;
+	Optional<DisplayCoord> display_coord(BufferCoord coord) const;
+	Optional<BufferCoord> buffer_coord(DisplayCoord coord) const;
 
-    Buffer& buffer() const { return *m_buffer; }
+	Buffer& buffer() const { return *m_buffer; }
 
-    bool needs_redraw(const Context& context) const;
+	bool needs_redraw(const Context& context) const;
 
-    void set_client(Client* client);
+	void set_client(Client* client);
 
-    void clear_display_buffer();
-    void run_resize_hook_ifn();
+	void clear_display_buffer();
+	void run_resize_hook_ifn();
 
-    const DisplaySetup& last_display_setup() const { return m_last_display_setup; }
+	const DisplaySetup& last_display_setup() const {
+		return m_last_display_setup;
+	}
 
 private:
-    Window(const Window&) = delete;
+	Window(const Window&) = delete;
 
-    DisplaySetup compute_display_setup(const Context& context) const;
-    void on_option_changed(const Option& option) override;
+	DisplaySetup compute_display_setup(const Context& context) const;
+	void on_option_changed(const Option& option) override;
 
-    friend class ClientManager;
-    void run_hook_in_own_context(Hook hook, StringView param,
-                                 String client_name = "");
+	friend class ClientManager;
+	void run_hook_in_own_context(Hook hook, StringView param,
+	                             String client_name = "");
 
-    SafePtr<Buffer> m_buffer;
-    SafePtr<Client> m_client;
+	SafePtr<Buffer> m_buffer;
+	SafePtr<Client> m_client;
 
-    DisplayCoord m_position;
-    DisplayCoord m_dimensions;
-    DisplayBuffer m_display_buffer;
+	DisplayCoord m_position;
+	DisplayCoord m_dimensions;
+	DisplayBuffer m_display_buffer;
 
-    Highlighters m_builtin_highlighters;
-    bool m_resize_hook_pending = false;
-    DisplaySetup m_last_display_setup;
+	Highlighters m_builtin_highlighters;
+	bool m_resize_hook_pending = false;
+	DisplaySetup m_last_display_setup;
 
-    struct Setup
-    {
-        DisplayCoord position;
-        DisplayCoord dimensions;
-        size_t timestamp;
-        size_t faces_hash;
-        size_t main_selection;
-        Vector<BasicSelection, MemoryDomain::Display> selections;
-    };
-    Setup build_setup(const Context& context) const;
-    Setup m_last_setup;
+	struct Setup {
+		DisplayCoord position;
+		DisplayCoord dimensions;
+		size_t timestamp;
+		size_t faces_hash;
+		size_t main_selection;
+		Vector<BasicSelection, MemoryDomain::Display> selections;
+	};
+	Setup build_setup(const Context& context) const;
+	Setup m_last_setup;
 };
 
-}
+} // namespace Kakoune
 
 #endif // window_hh_INCLUDED

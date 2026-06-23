@@ -3,12 +3,11 @@
 
 #include <chrono>
 
-namespace Kakoune
-{
+namespace Kakoune {
 
 using Clock = std::chrono::steady_clock;
 using TimePoint = Clock::time_point;
 
-}
+} // namespace Kakoune
 
 #endif // clock_hh_INCLUDED
