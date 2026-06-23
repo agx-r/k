@@ -33,7 +33,6 @@ tag-sanitize-undefined = .san_u
 
 LDFLAGS-static-yes = -static -pthread
 
-version = $(shell cat .version 2>/dev/null || git describe --tags HEAD 2>/dev/null | sed s/^v// || echo unknown)
 version != cat .version 2>/dev/null || ( git describe --tags HEAD 2>/dev/null | sed s/^v// ) || echo unknown
 
 PREFIX = /usr/local
@@ -46,7 +45,6 @@ docdir = $(DESTDIR)$(PREFIX)/share/doc/kak
 mandir = $(DESTDIR)$(PREFIX)/share/man/man1
 
 # Both Cygwin and MSYS2 have "_NT" in their uname.
-os = $(shell uname | sed 's/.*_NT.*/Windows/')
 os != uname | sed 's/.*_NT.*/Windows/'
 
 LIBS-os-Haiku = -lnetwork -lbe
@@ -61,11 +59,7 @@ LIBS-os-Windows = -ldbghelp
 
 CXXFLAGS-default = -std=c++2b -Wall -Wextra -pedantic -Wno-unused-parameter -Wno-sign-compare
 
-compiler = $(shell $(CXX) --version | grep -E -o 'clang|g\+\+|c\+\+' | head -1)
 compiler != $(CXX) --version | grep -E -o 'clang|g\+\+|c\+\+' | head -1
-CXXFLAGS-compiler-clang = -fsized-deallocation
-CXXFLAGS-compiler-g++ = -Wno-init-list-lifetime -Wno-stringop-overflow
-CXXFLAGS-compiler-c++ = $(CXXFLAGS-compiler-g++)
 
 KAK_CPPFLAGS = \
 	$(CPPFLAGS-default) \
@@ -77,7 +71,6 @@ KAK_CXXFLAGS = \
 	$(CXXFLAGS-default) \
 	$(CXXFLAGS-debug-$(debug)) \
 	$(CXXFLAGS-sanitize-$(sanitize)) \
-	$(CXXFLAGS-compiler-$(compiler)) \
 	$(CXXFLAGS)
 
 KAK_LDFLAGS = \
@@ -97,7 +90,6 @@ tagbin = $(tag)$(tag-static-$(static))
 .SUFFIXES: $(tag).o .cc
 .PHONY: src/kak
 
-sources = $(shell find src -type f -name '*.cc' | sed -e '/\.version\.cc/d')
 sources != find src -type f -name '*.cc' | sed -e '/\.version\.cc/d'
 objects = $(sources:.cc=$(tag).o)
 
@@ -109,7 +101,6 @@ src/kak: src/kak$(tagbin)
 src/kak$(tagbin): src/.version$(tag).o $(objects)
 	$(CXX) $(KAK_LDFLAGS) $(KAK_CXXFLAGS) $(objects) src/.version$(tag).o $(KAK_LIBS) -o $@
 
-deps = $(shell touch src/.version$(tag).d && find src -type f -name '.*$(tag).d') # Ensure we find one deps for FreeBSD make
 deps != touch src/.version$(tag).d && find src -type f -name '.*$(tag).d' # Ensure we find one deps for FreeBSD make
 include $(deps)
 
