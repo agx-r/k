@@ -237,11 +237,11 @@ const EnvVarDesc builtin_env_vars[] = {
      }},
     {"cursor_line", false,
      [](StringView name, const Context& context) -> Vector<String> {
-	     return {to_string(context.selections().main().cursor().line + 1)};
+	     return {to_string(context.selections().main().cursor().line)};
      }},
     {"cursor_column", false,
      [](StringView name, const Context& context) -> Vector<String> {
-	     return {to_string(context.selections().main().cursor().column + 1)};
+	     return {to_string(context.selections().main().cursor().column)};
      }},
     {"cursor_char_value", false,
      [](StringView name, const Context& context) -> Vector<String> {
