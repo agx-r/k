@@ -1119,10 +1119,10 @@ private:
 		char format[16];
 		format_to(format, "\\{:{}}", digit_count);
 		const int main_line =
-		    (int)context.context.selections().main().cursor().line + 1;
+		    (int)context.context.selections().main().cursor().line;
 		int last_line = -1;
 		for (auto& line : display_buffer.lines()) {
-			const int current_line = (int)line.range().begin.line + 1;
+			const int current_line = (int)line.range().begin.line;
 			const bool is_cursor_line = main_line == current_line;
 			const int line_to_format =
 			    (m_relative and (not is_cursor_line or m_zero_cursor_line))
@@ -1164,7 +1164,7 @@ private:
 	int compute_digit_count(const HighlightContext& context) const {
 		int digit_count = 0;
 		auto cursor_line =
-		    context.context.selections().main().cursor().line + 1;
+		    context.context.selections().main().cursor().line;
 		LineCount line_count =
 		    (m_relative and m_zero_cursor_line)
 		        ? std::max(abs(context.setup.first_line - cursor_line),
