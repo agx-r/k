@@ -1434,7 +1434,7 @@ private:
 			width = std::max(width, l.length());
 		const DisplayAtom empty{String{' ', width}, def_face};
 		for (auto& line : display_buffer.lines()) {
-			int line_num = (int)line.range().begin.line + 1;
+			int line_num = (int)line.range().begin.line;
 			auto it = find_if(lines, [&](const LineAndSpec& l) {
 				return std::get<0>(l) == line_num;
 			});
@@ -1502,9 +1502,9 @@ bool is_empty(const InclusiveBufferRange& range) {
 
 String option_to_string(InclusiveBufferRange range) {
 	if (is_empty(range))
-		return format("{}.{}+0", range.first.line + 1, range.first.column + 1);
-	return format("{}.{},{}.{}", range.first.line + 1, range.first.column + 1,
-	              range.last.line + 1, range.last.column + 1);
+		return format("{}.{}+0", range.first.line, range.first.column);
+	return format("{}.{},{}.{}", range.first.line, range.first.column,
+	              range.last.line, range.last.column);
 }
 
 InclusiveBufferRange option_from_string(Meta::Type<InclusiveBufferRange>,
@@ -1520,11 +1520,11 @@ InclusiveBufferRange option_from_string(Meta::Type<InclusiveBufferRange>,
 		           "<line>.<column>+<len> format",
 		           str));
 
-	const BufferCoord first{str_to_int({str.begin(), dot_beg}) - 1,
-	                        str_to_int({dot_beg + 1, sep}) - 1};
+	const BufferCoord first{str_to_int({str.begin(), dot_beg}),
+	                        str_to_int({dot_beg + 1, sep})};
 
 	if (first.line < 0 or first.column < 0)
-		throw runtime_error("coordinates elements should be >= 1");
+		throw runtime_error("coordinates should not be negative");
 
 	if (*sep == '+') {
 		auto len = str_to_int({sep + 1, str.end()});
@@ -1533,10 +1533,10 @@ InclusiveBufferRange option_from_string(Meta::Type<InclusiveBufferRange>,
 		                   : BufferCoord{first.line, first.column + len - 1}};
 	}
 
-	const BufferCoord last{str_to_int({sep + 1, dot_end}) - 1,
-	                       str_to_int({dot_end + 1, str.end()}) - 1};
+	const BufferCoord last{str_to_int({sep + 1, dot_end}),
+	                       str_to_int({dot_end + 1, str.end()})};
 	if (last.line < 0 or last.column < 0)
-		throw runtime_error("coordinates elements should be >= 1");
+		throw runtime_error("coordinates elements should not be negative");
 
 	return {std::min(first, last), std::max(first, last)};
 }

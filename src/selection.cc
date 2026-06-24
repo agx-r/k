@@ -497,8 +497,8 @@ Selection selection_from_string(ColumnType column_type, const Buffer& buffer,
 	auto compute_coord = [&](int line, int column) -> BufferCoord {
 		if (line < 0 or column < 0)
 			throw runtime_error(
-			    format("coordinate {}.{} does not exist in buffer", line + 1,
-			           column + 1));
+			    format("coordinate {}.{} does not exist in buffer", line,
+			           column));
 
 		switch (column_type) {
 		default:
@@ -509,7 +509,7 @@ Selection selection_from_string(ColumnType column_type, const Buffer& buffer,
 			    buffer[line].char_length() <= column)
 				throw runtime_error(
 				    format("coordinate {}.{} does not exist in buffer",
-				           line + 1, column + 1));
+				           line, column));
 			return {line, buffer[line].byte_count_to(CharCount{column})};
 		case ColumnType::DisplayColumn:
 			kak_assert(tabstop != -1);
@@ -517,18 +517,18 @@ Selection selection_from_string(ColumnType column_type, const Buffer& buffer,
 			    column_length(buffer, tabstop, line) <= column)
 				throw runtime_error(
 				    format("coordinate {}.{} does not exist in buffer",
-				           line + 1, column + 1));
+				           line, column));
 			return {line, get_byte_to_column(
 			                  buffer, tabstop,
 			                  DisplayCoord{line, ColumnCount{column}})};
 		}
 	};
 
-	auto anchor = compute_coord(str_to_int({desc.begin(), dot_anchor}) - 1,
-	                            str_to_int({dot_anchor + 1, comma}) - 1);
+	auto anchor = compute_coord(str_to_int({desc.begin(), dot_anchor}),
+	                            str_to_int({dot_anchor + 1, comma}));
 
-	auto cursor = compute_coord(str_to_int({comma + 1, dot_cursor}) - 1,
-	                            str_to_int({dot_cursor + 1, desc.end()}) - 1);
+	auto cursor = compute_coord(str_to_int({comma + 1, dot_cursor}),
+	                            str_to_int({dot_cursor + 1, desc.end()}));
 
 	return Selection{anchor, cursor};
 }
