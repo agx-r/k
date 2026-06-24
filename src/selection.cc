@@ -450,18 +450,18 @@ String selection_to_string(ColumnType column_type, const Buffer& buffer,
 	switch (column_type) {
 	default:
 	case ColumnType::Byte:
-		return format("{}.{},{}.{}", anchor.line + 1, anchor.column + 1,
-		              cursor.line + 1, cursor.column + 1);
+		return format("{}.{},{}.{}", anchor.line, anchor.column,
+		              cursor.line, cursor.column);
 	case ColumnType::Codepoint:
-		return format("{}.{},{}.{}", anchor.line + 1,
-		              buffer[anchor.line].char_count_to(anchor.column) + 1,
-		              cursor.line + 1,
-		              buffer[cursor.line].char_count_to(cursor.column) + 1);
+		return format("{}.{},{}.{}", anchor.line,
+		              buffer[anchor.line].char_count_to(anchor.column),
+		              cursor.line,
+		              buffer[cursor.line].char_count_to(cursor.column));
 	case ColumnType::DisplayColumn:
 		kak_assert(tabstop != -1);
-		return format("{}.{},{}.{}", anchor.line + 1,
-		              get_column(buffer, tabstop, anchor) + 1, cursor.line + 1,
-		              get_column(buffer, tabstop, cursor) + 1);
+		return format("{}.{},{}.{}", anchor.line,
+		              get_column(buffer, tabstop, anchor), cursor.line,
+		              get_column(buffer, tabstop, cursor));
 	}
 }
 

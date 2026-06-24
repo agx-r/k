@@ -283,7 +283,7 @@ Token parse_percent_token(ParseState& state, bool throw_on_unterminated) {
 		if (throw_on_unterminated and not quoted.terminated) {
 			auto coord = compute_coord({state.str.begin(), start});
 			throw parse_error{format("{}:{}: unterminated string '%{}{}...{}'",
-			                         coord.line + 1, coord.column + 1,
+			                         coord.line, coord.column,
 			                         type_name, it->opening, it->closing)};
 		}
 
@@ -296,7 +296,7 @@ Token parse_percent_token(ParseState& state, bool throw_on_unterminated) {
 		if (throw_on_unterminated and not quoted.terminated) {
 			auto coord = compute_coord({state.str.begin(), start});
 			throw parse_error{format("{}:{}: unterminated string '%{}{}...{}'",
-			                         coord.line + 1, coord.column + 1,
+			                         coord.line, coord.column,
 			                         type_name, opening_delimiter,
 			                         opening_delimiter)};
 		}
@@ -517,8 +517,8 @@ void CommandManager::execute(StringView command_line, Context& context,
 			} catch (runtime_error& error) {
 				auto coord =
 				    compute_coord(command_line.substr(0_byte, command_pos));
-				error.set_what(format("{}:{}: '{}': {}", coord.line + 1,
-				                      coord.column + 1, params[0],
+				error.set_what(format("{}:{}: '{}': {}", coord.line,
+				                      coord.column, params[0],
 				                      error.what()));
 				throw;
 			}
