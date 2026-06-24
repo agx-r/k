@@ -211,9 +211,9 @@ template <SelectMode mode>
 void goto_commands(Context& context, NormalParams params) {
 	if (params.count != 0) {
 		context.push_jump();
-		select_coord<mode>(context, LineCount{params.count - 1});
+		select_coord<mode>(context, LineCount{params.count});
 		if (context.has_window())
-			context.window().center_line(LineCount{params.count - 1});
+			context.window().center_line(LineCount{params.count});
 	} else {
 		on_next_key_with_autoinfo(
 		    context, "goto", KeymapMode::Goto,

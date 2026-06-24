@@ -411,7 +411,7 @@ TerminalUI::TerminalUI()
 			                      m_on_key(*key);
 	                      }
                       }},
-      m_assistant(assistant_cat) {
+      m_assistant(assistant_clippy) {
 	if (not isatty(1))
 		throw runtime_error("stdout is not a tty");
 
@@ -1641,7 +1641,7 @@ void TerminalUI::set_ui_options(const Options& options) {
 		return {};
 	};
 
-	auto assistant = find("terminal_assistant").value_or("clippy");
+	auto assistant = find("terminal_assistant").value_or("cat");
 	if (assistant == "clippy")
 		m_assistant = assistant_clippy;
 	else if (assistant == "cat")
