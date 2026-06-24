@@ -387,6 +387,17 @@ static constexpr StringView assistant_dilbert[] = {
     R"( Ͼ   ∪   Ͽ │)", R"(  |     |  ╯)", R"( ˏ`-.ŏ.-´ˎ  )", R"(     @      )",
     R"(      @     )", R"(            )"};
 
+static constexpr StringView assistant_book[] = {
+R"(       _______  )",
+R"(      /       /_)",
+R"(     /  -/-  / /)",
+R"(    /   /   / / )",
+R"(   /_______/ /  )",
+R"(  ((______| /   )",
+R"(   `"""""""`    )",
+R"(                )"
+};
+
 template <typename T> T sq(T x) { return x * x; }
 
 static sig_atomic_t resize_pending = 0;
@@ -1516,8 +1527,8 @@ void TerminalUI::info_show(const DisplayLine& title,
 			(draw(args), ...);
 		};
 
-		constexpr Codepoint dash{L'─'};
-		constexpr Codepoint dotted_dash{L'┄'};
+		constexpr Codepoint dash{L'-'};
+		constexpr Codepoint dotted_dash{L'='};
 		if (assisted) {
 			const auto assistant_top_margin =
 			    (size.line - m_assistant.size() + 1) / 2;
@@ -1534,7 +1545,7 @@ void TerminalUI::info_show(const DisplayLine& title,
 			draw_atoms(lines[(int)line]);
 		else if (line == 0) {
 			if (title.atoms().empty() or content_size.column < 2)
-				draw_atoms("╭─" + String{dash, content_size.column} + "─╮");
+				draw_atoms("+-" + String{dash, content_size.column} + "-+");
 			else {
 				auto trimmed_title = title;
 				trimmed_title.trim(0, content_size.column - 2);
@@ -1542,21 +1553,21 @@ void TerminalUI::info_show(const DisplayLine& title,
 				    content_size.column - trimmed_title.length() - 2;
 				String left{dash, dash_count / 2};
 				String right{dash, dash_count - dash_count / 2};
-				draw_atoms("╭─" + left + "┤", trimmed_title,
-				           "├" + right + "─╮");
+				draw_atoms("+-" + left + "+", trimmed_title,
+				           "+" + right + "-+");
 			}
 		} else if (line < size.line - 1 and line <= lines.size()) {
 			auto info_line = lines[(int)line - 1];
 			const bool trimmed = info_line.trim(0, content_size.column);
 			const ColumnCount padding =
 			    content_size.column - info_line.length();
-			draw_atoms("│ ", info_line, padding, (trimmed ? "…│" : " │"));
+			draw_atoms("| ", info_line, padding, (trimmed ? "*|" : " |"));
 		} else if (line ==
 		           std::min<LineCount>((int)lines.size() + 1, size.line - 1))
-			draw_atoms("╰─",
+			draw_atoms("+-",
 			           String(line > lines.size() ? dash : dotted_dash,
 			                  content_size.column),
-			           "─╯");
+			           "-+");
 	}
 	m_dirty = true;
 }
@@ -1641,13 +1652,15 @@ void TerminalUI::set_ui_options(const Options& options) {
 		return {};
 	};
 
-	auto assistant = find("terminal_assistant").value_or("cat");
+	auto assistant = find("terminal_assistant").value_or("book");
 	if (assistant == "clippy")
 		m_assistant = assistant_clippy;
 	else if (assistant == "cat")
 		m_assistant = assistant_cat;
 	else if (assistant == "dilbert")
 		m_assistant = assistant_dilbert;
+	else if (assistant == "book")
+		m_assistant = assistant_book;
 	else if (assistant == "none" or assistant == "off")
 		m_assistant = ConstArrayView<StringView>{};
 
