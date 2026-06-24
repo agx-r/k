@@ -254,15 +254,14 @@ const EnvVarDesc builtin_env_vars[] = {
      [](StringView name, const Context& context) -> Vector<String> {
 	     auto coord = context.selections().main().cursor();
 	     return {to_string(
-	         context.buffer()[coord.line].char_count_to(coord.column) + 1)};
+	         context.buffer()[coord.line].char_count_to(coord.column))};
      }},
     {"cursor_display_column", false,
      [](StringView name, const Context& context) -> Vector<String> {
 	     auto coord = context.selections().main().cursor();
 	     return {to_string(get_column(context.buffer(),
 	                                  context.options()["tabstop"].get<int>(),
-	                                  coord) +
-	                       1)};
+	                                  coord))};
      }},
     {"cursor_byte_offset", false,
      [](StringView name, const Context& context) -> Vector<String> {
@@ -352,7 +351,7 @@ const EnvVarDesc builtin_env_vars[] = {
      [](StringView name, const Context& context) -> Vector<String> {
 	     return history_as_strings(
 	         ArrayView(context.buffer().history())
-	             .subrange(str_to_int(name.substr(14_byte)) + 1));
+	             .subrange(str_to_int(name.substr(14_byte))));
      }},
     {"uncommitted_modifications", false,
      [](StringView name, const Context& context) -> Vector<String> {
@@ -1163,11 +1162,10 @@ int main(int argc, char* argv[]) {
 				auto colon = find(name, ':');
 				if (auto line = str_to_int_ifp({name.begin() + 1, colon})) {
 					init_coord = std::max<BufferCoord>(
-					    {0, 0}, {*line - 1,
+					    {0, 0}, {*line,
 					             colon != name.end()
 					                 ? str_to_int_ifp({colon + 1, name.end()})
-					                           .value_or(1) -
-					                       1
+					                           .value_or(0)
 					                 : 0});
 					continue;
 				}
@@ -1201,8 +1199,8 @@ int main(int argc, char* argv[]) {
 				new_files +=
 				    format("edit '{}'", escape(real_path(name), "'", '\''));
 				if (init_coord) {
-					new_files += format(" {} {}", init_coord->line + 1,
-					                    init_coord->column + 1);
+					new_files += format(" {} {}", init_coord->line,
+					                    init_coord->column);
 					init_coord.reset();
 				}
 				new_files += ";";
