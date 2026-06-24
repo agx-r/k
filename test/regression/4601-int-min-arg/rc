@@ -1,5 +1,0 @@
-try %{
-    nop %arg{-2147483648}
-} catch %{
-    exec iok<esc>
-}

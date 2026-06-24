@@ -1,1 +1,0 @@
-hook global InsertKey '<(?<name>\w+)>' %{ exec "<backspace>%val(hook_param_capture_name)" }

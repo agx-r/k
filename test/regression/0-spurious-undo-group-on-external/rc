@@ -1,2 +1,0 @@
-decl int my_option
-hook global InsertChar r %{ eval -buffer %val{buffile} %{ eval "set buffer my_option 1" } }

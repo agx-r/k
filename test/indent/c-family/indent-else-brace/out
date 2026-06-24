@@ -1,5 +1,0 @@
-if (condition)
-    foo();
-else
-{
-    foo

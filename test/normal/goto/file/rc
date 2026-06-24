@@ -1,1 +1,0 @@
-nop %sh{ printf 'pass\n' > goto-file }

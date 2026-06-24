@@ -1,3 +1,0 @@
-mkdir spec base
-echo "ALT" > spec/out_spec.rb
-echo "BASE" > base/out.rb

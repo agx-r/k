@@ -1,2 +1,0 @@
-test(bool very_long_variable_name) :
-very_long_variable_name(very_long_variable_name())

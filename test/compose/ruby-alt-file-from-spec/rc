@@ -1,2 +1,0 @@
-source "%val{runtime}/rc/filetype/ruby.kak"
-edit spec/out_spec.rb

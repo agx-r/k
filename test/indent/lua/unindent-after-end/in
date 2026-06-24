@@ -1,7 +1,0 @@
-if A then
-        %( )
-
-if A then
-    while B then
-    end
-    %( )

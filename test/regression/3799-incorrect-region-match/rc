@@ -1,2 +1,0 @@
-add-highlighter global/regions regions
-add-highlighter global/regions/heredoc region -match-capture <<\h*"(\w*)" ^(\w*)$ fill red

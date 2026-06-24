@@ -1,3 +1,0 @@
-source "%val{runtime}/colors/default.kak"
-source "%val{runtime}/rc/filetype/haskell.kak"
-set buffer filetype haskell

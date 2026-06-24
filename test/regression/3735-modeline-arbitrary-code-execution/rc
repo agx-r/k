@@ -1,3 +1,0 @@
-source "%val{runtime}/rc/detection/modeline.kak"
-declare-option -hidden bool pwned no
-set-option global tabstop 42

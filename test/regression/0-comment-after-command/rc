@@ -1,5 +1,0 @@
-def my-command %{
-    buffer-next # go to next
-    %sh{ echo buffer-previous }
-    exec ifoo<esc>
-}

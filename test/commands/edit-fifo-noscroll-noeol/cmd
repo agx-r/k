@@ -1,1 +1,0 @@
-:nop %sh{mkfifo fifo}; edit -fifo fifo *fifo*<ret>

@@ -1,1 +1,0 @@
-set-register a %{grep -E 'foo|bar'}

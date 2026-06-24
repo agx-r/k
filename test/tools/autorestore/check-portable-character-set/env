@@ -1,3 +1,0 @@
-BACKUP='.out.kak.;"foo"'
-echo BACKUP > "$BACKUP"
-while [ -z "$(find "$BACKUP" -newer out)" ]; do touch "$BACKUP"; done

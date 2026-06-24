@@ -1,4 +1,0 @@
-print << "";
-part of heredoc
-
-not part of heredoc

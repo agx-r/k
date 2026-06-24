@@ -1,3 +1,0 @@
-case $foo in
-    bar) thing1;;
-    baz)

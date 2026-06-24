@@ -1,2 +1,0 @@
-#!/bin/sh
-[ $(echo -n "😄😊😉😍" | wc -m) = '4' ] && locale | grep LC_CTYPE | grep -qi 'utf-*8'

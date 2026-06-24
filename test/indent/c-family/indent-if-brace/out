@@ -1,3 +1,0 @@
-if (int i = bar())
-{
-    foo

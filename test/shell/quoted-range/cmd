@@ -1,1 +1,0 @@
-!printf '%s' "$kak_quoted_opt_my_ranges"<ret>

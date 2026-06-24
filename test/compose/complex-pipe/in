@@ -1,8 +1,0 @@
-foo %(baz
-bar
-qux) quux
-
-foo %(baz
-bar
-qux
-)

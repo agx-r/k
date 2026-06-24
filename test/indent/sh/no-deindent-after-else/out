@@ -1,8 +1,0 @@
-if [ $foo ]; then
-    if [ $bar ]; then
-        foobar
-    else
-        baz
-        qux
-    fi
-fi

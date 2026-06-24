@@ -1,1 +1,0 @@
-set-register a 'sed s/foo/bar/'

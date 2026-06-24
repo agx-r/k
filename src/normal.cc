@@ -224,20 +224,19 @@ void goto_commands(Context& context, NormalParams params) {
 			    auto& buffer = context.buffer();
 			    switch (auto lower_cp = to_lower(*cp); lower_cp) {
 			    case 'g':
-			    case 'k':
 				    context.push_jump();
 				    select_coord<mode>(context, BufferCoord{0, 0});
 				    break;
-			    case 'l':
+			    case 'i':
 				    select<mode, select_to_line_end<true>>(context, {});
 				    break;
-			    case 'h':
+			    case 'u':
 				    select<mode, select_to_line_begin<true>>(context, {});
 				    break;
-			    case 'i':
+			    case 'h':
 				    select<mode, select_to_first_non_blank>(context, {});
 				    break;
-			    case 'j':
+			    case 'n':
 				    context.push_jump();
 				    select_coord<mode>(context, buffer.line_count() - 1);
 				    break;
@@ -276,8 +275,7 @@ void goto_commands(Context& context, NormalParams params) {
 				    context.change_buffer(*target);
 				    break;
 			    }
-			    case 'd':
-			    case 'u': {
+			    case 'd': {
 				    auto offset = (lower_cp == 'd' ? 1_line : -1_line) *
 				                  std::max(params.count, 1);
 				    select(
@@ -371,12 +369,12 @@ void goto_commands(Context& context, NormalParams params) {
 				    throw runtime_error("key not mapped");
 			    }
 		    },
-		    (mode == SelectMode::Extend ? "goto (extend to)" : "goto"),
+		    (mode == SelectMode::Extend ? "extendto" : "goto"),
 		    build_autoinfo_for_mapping(context, KeymapMode::Goto,
-		                               {{{'g', 'k'}, "buffer top"},
-		                                {{'l'}, "line end"},
-		                                {{'h'}, "line begin"},
-		                                {{'i'}, "line non blank start"},
+		                               {{{'g'}, "buffer top"},
+		                                {{'i'}, "line end"},
+		                                {{'u'}, "line begin"},
+		                                {{'h'}, "line non blank start"},
 		                                {{'j'}, "buffer bottom"},
 		                                {{'e'}, "buffer end"},
 		                                {{'t'}, "window top"},

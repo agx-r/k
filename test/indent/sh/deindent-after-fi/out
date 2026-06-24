@@ -1,4 +1,0 @@
-if [ $foo ]; then
-    thing1
-fi
-

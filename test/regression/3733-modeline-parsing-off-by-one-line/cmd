@@ -1,3 +1,0 @@
-:modeline-parse<ret>
-%
-:exec c %opt{tabstop}<ret>

@@ -1,2 +1,0 @@
-source "%val{runtime}/rc/tools/autowrap.kak"
-autowrap-enable

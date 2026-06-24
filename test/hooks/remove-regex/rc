@@ -1,2 +1,0 @@
-hook global -group group1 InsertChar f %{ exec o }
-hook global -group group2 InsertChar f %{ exec o }

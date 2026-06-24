@@ -1,1 +1,0 @@
-if<esc>:remove-hooks global group[12]<ret>if<esc>
