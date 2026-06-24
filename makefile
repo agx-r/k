@@ -7,9 +7,8 @@ BIN    = out/kak
 
 .PATH.cc: src != find src -type d
 
-sources != find src -type f -name '*.cc' | sed -e '/\.version\.cc/d'
+sources != find src -type f -name '*.cc'
 objects = $(sources:t:R:%=out/%.opt.o)
-version != cat .version 2>/dev/null || ( git describe --tags HEAD 2>/dev/null | sed s/^v// ) || echo unknown
 
 CPPFLAGS += -DKAK_BIN_PATH=\"$(DESTDIR)$(PREFIX)/bin/kak\"
 CXXFLAGS += -std=c++2b -O3 -g3 -Wall -Wextra -pedantic -Wno-unused-parameter -Wno-sign-compare
@@ -25,7 +24,7 @@ $(BIN): out/.version.opt.o $(objects)
 
 out/.version.cc:
 	@mkdir -p out
-	echo 'namespace Kakoune { const char *version = "$(version)"; }' > $@
+	echo 'namespace Kakoune { const char *version = "purified"; }' > $@
 
 clean:
 	rm -rf out

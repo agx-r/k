@@ -411,7 +411,7 @@ TerminalUI::TerminalUI()
 			                      m_on_key(*key);
 	                      }
                       }},
-      m_assistant(assistant_clippy) {
+      m_assistant(assistant_cat) {
 	if (not isatty(1))
 		throw runtime_error("stdout is not a tty");
 
