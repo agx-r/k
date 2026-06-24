@@ -415,7 +415,6 @@ template <bool lock> void view_commands(Context& context, NormalParams params) {
 		    const ColumnCount column_offset{std::min(
 		        (window.dimensions().column - 1) / 2, scrolloff.column)};
 		    switch (*cp) {
-		    case 'v':
 		    case 'c':
 			    window.center_line(cursor.line);
 			    break;
@@ -446,15 +445,15 @@ template <bool lock> void view_commands(Context& context, NormalParams params) {
 		    case 'h':
 			    window.scroll(-std::max<ColumnCount>(1, count));
 			    break;
-		    case 'j':
+		    case 'n':
 			    scroll_window(context, std::max<LineCount>(1, count),
 			                  OnHiddenCursor::PreserveSelections);
 			    break;
-		    case 'k':
+		    case 'e':
 			    scroll_window(context, -std::max<LineCount>(1, count),
 			                  OnHiddenCursor::PreserveSelections);
 			    break;
-		    case 'l':
+		    case 'i':
 			    window.scroll(std::max<ColumnCount>(1, count));
 			    break;
 		    default:
@@ -463,16 +462,16 @@ template <bool lock> void view_commands(Context& context, NormalParams params) {
 	    },
 	    lock ? "view (lock)" : "view",
 	    build_autoinfo_for_mapping(context, KeymapMode::View,
-	                               {{{'v', 'c'}, "center cursor (vertically)"},
-	                                {{'m'}, "center cursor (horizontally)"},
+	                               {{{'c'}, "center cursor vertically"},
+	                                {{'m'}, "center cursor horizontally"},
 	                                {{'t'}, "cursor on top"},
 	                                {{'b'}, "cursor on bottom"},
 	                                {{'<'}, "cursor on left"},
 	                                {{'>'}, "cursor on right"},
 	                                {{'h'}, "scroll left"},
-	                                {{'j'}, "scroll down"},
-	                                {{'k'}, "scroll up"},
-	                                {{'l'}, "scroll right"}}));
+	                                {{'n'}, "scroll down"},
+	                                {{'e'}, "scroll up"},
+	                                {{'i'}, "scroll right"}}));
 }
 
 void replace_with_char(Context& context, NormalParams) {
