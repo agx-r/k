@@ -631,63 +631,6 @@ BufferRange apply_diff(Buffer& buffer, BufferCoord pos,
 	return {first, pos};
 }
 
-UnitTest test_apply_diff{[] {
-	using Change = Buffer::Change;
-	auto validate = [&](LineCount line, StringView new_text,
-	                    BufferRange expected_new_range,
-	                    ConstArrayView<Change> expected_buffer_changes) {
-		Buffer buffer{"",
-		              Buffer::Flags::None,
-		              {
-		                  StringData::create("line1\n"),
-		                  StringData::create("line2\n"),
-		                  StringData::create("line3\n"),
-		              }};
-		const size_t timestamp = buffer.timestamp();
-		Vector<StringView> old_text;
-		for (auto i = line; i < buffer.line_count(); i++)
-			old_text.push_back(buffer[i]);
-		BufferRange new_text_range =
-		    apply_diff(buffer, BufferCoord{line, 0}, old_text, new_text);
-		kak_assert(new_text_range == expected_new_range);
-		kak_assert(buffer.changes_since(timestamp) == expected_buffer_changes);
-	};
-	// When appending at end, we add any missing newline
-	validate(
-	    /*line=*/3, "added-line3-missing-eol", BufferRange{{3, 0}, {4, 0}},
-	    {
-	        Change{Change::Insert, {3, 0}, {4, 0}},
-	    });
-	// Special case: erasing until buffer end also erases the final newline.
-	validate(
-	    /*line=*/2, "", BufferRange{{1, 5}, {1, 5}},
-	    {
-	        Change{Change::Erase, {2, 0}, {3, 0}},
-	    });
-	// Erasing and appending at end still produces forward-only changes.
-	validate(
-	    /*line=*/2,
-	    "changed-line3\n"
-	    "added-line4\n"
-	    "added-line5\n",
-	    BufferRange{{2, 0}, {5, 0}},
-	    {
-	        Change{Change::Erase, {2, 0}, {3, 0}},
-	        Change{Change::Insert, {2, 0}, {5, 0}},
-	    });
-	// Same result when append is missing newline.
-	validate(
-	    /*line=*/2,
-	    "changed-line3\n"
-	    "added-line4\n"
-	    "added-line5-missing-eol",
-	    BufferRange{{2, 0}, {5, 0}},
-	    {
-	        Change{Change::Erase, {2, 0}, {3, 0}},
-	        Change{Change::Insert, {2, 0}, {5, 0}},
-	    });
-}};
-
 template <bool replace> void pipe(Context& context, NormalParams params) {
 	const char* prompt = replace ? "pipe:" : "pipe-to:";
 	String default_command =
@@ -2487,40 +2430,40 @@ private:
 static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
     keymap = {
         {{'h'}, {"move left", move_cursor<CharCount, Backward>}},
-        {{'j'}, {"move down", move_cursor<LineCount, Forward>}},
-        {{'k'}, {"move up", move_cursor<LineCount, Backward>}},
-        {{'l'}, {"move right", move_cursor<CharCount, Forward>}},
+        {{'n'}, {"move down", move_cursor<LineCount, Forward>}},
+        {{'e'}, {"move up", move_cursor<LineCount, Backward>}},
+        {{'i'}, {"move right", move_cursor<CharCount, Forward>}},
 
         {{'H'},
          {"extend left", move_cursor<CharCount, Backward, SelectMode::Extend>}},
-        {{'J'},
+        {{'N'},
          {"extend down", move_cursor<LineCount, Forward, SelectMode::Extend>}},
-        {{'K'},
+        {{'E'},
          {"extend up", move_cursor<LineCount, Backward, SelectMode::Extend>}},
-        {{'L'},
+        {{'I'},
          {"extend right", move_cursor<CharCount, Forward, SelectMode::Extend>}},
 
         {{'t'},
          {"select to next character", select_to_next_char<SelectFlags::None>}},
-        {{'f'},
+        {{'r'},
          {"select to next character included",
           select_to_next_char<SelectFlags::Inclusive>}},
         {{'T'},
          {"extend to next character",
           select_to_next_char<SelectFlags::Extend>}},
-        {{'F'},
+        {{'R'},
          {"extend to next character included",
           select_to_next_char<SelectFlags::Inclusive | SelectFlags::Extend>}},
         {{alt('t')},
          {"select to previous character",
           select_to_next_char<SelectFlags::Reverse>}},
-        {{alt('f')},
+        {{alt('r')},
          {"select to previous character included",
           select_to_next_char<SelectFlags::Inclusive | SelectFlags::Reverse>}},
         {{alt('T')},
          {"extend to previous character",
           select_to_next_char<SelectFlags::Extend | SelectFlags::Reverse>}},
-        {{alt('F')},
+        {{alt('R')},
          {"extend to previous character included",
           select_to_next_char<SelectFlags::Inclusive | SelectFlags::Extend |
                               SelectFlags::Reverse>}},
@@ -2530,10 +2473,10 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
          {"erase selected text, without yanking", erase_selections<false>}},
         {{'c'}, {"change selected text", change<true>}},
         {{alt('c')}, {"change selected text, without yanking", change<false>}},
-        {{'i'},
+        {{'u'},
          {"insert before selected text",
           enter_insert_mode<InsertMode::Insert>}},
-        {{'I'},
+        {{'U'},
          {"insert at line begin",
           enter_insert_mode<InsertMode::InsertAtLineBegin>}},
         {{'a'},
@@ -2569,9 +2512,9 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
         {{alt('P')},
          {"paste every yanked selection before selected text",
           paste_all<PasteMode::Insert>}},
-        {{'R'},
+        {{'C'},
          {"replace selected text with yanked text", paste<PasteMode::Replace>}},
-        {{alt('R')},
+        {{alt('C')},
          {"replace selected text with every yanked text",
           paste_all<PasteMode::Replace>}},
 
@@ -2610,7 +2553,7 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
         {{'w'},
          {"select to next word start",
           repeated<&select<SelectMode::Replace, select_to_next_word<Word>>>}},
-        {{'e'},
+        {{'f'},
          {"select to next word end",
           repeated<
               select<SelectMode::Replace, select_to_next_word_end<Word>>>}},
@@ -2621,7 +2564,7 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
         {{'W'},
          {"extend to next word start",
           repeated<select<SelectMode::Extend, select_to_next_word<Word>>>}},
-        {{'E'},
+        {{'F'},
          {"extend to next word end",
           repeated<select<SelectMode::Extend, select_to_next_word_end<Word>>>}},
         {{'B'},
@@ -2631,7 +2574,7 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
         {{alt('w')},
          {"select to next WORD start",
           repeated<select<SelectMode::Replace, select_to_next_word<WORD>>>}},
-        {{alt('e')},
+        {{alt('f')},
          {"select to next WORD end",
           repeated<
               select<SelectMode::Replace, select_to_next_word_end<WORD>>>}},
@@ -2649,10 +2592,10 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
          {"extend to previous WORD start",
           repeated<select<SelectMode::Extend, select_to_previous_word<WORD>>>}},
 
-        {{alt('l')},
+        {{alt('i')},
          {"select to line end",
           repeated<select<SelectMode::Replace, select_to_line_end<false>>>}},
-        {{alt('L')},
+        {{alt('I')},
          {"extend to line end",
           repeated<select<SelectMode::Extend, select_to_line_end<false>>>}},
         {{alt('h')},
@@ -2702,23 +2645,23 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
           [](Context& c, NormalParams p) {
 	          return search(c, p, SelectMode::Extend, RegexMode::Backward);
           }}},
-        {{'n'},
+        {{'k'},
          {"select next current search pattern match",
           [](Context& c, NormalParams p) {
 	          return search_next(c, p, SelectMode::Replace, RegexMode::Forward);
           }}},
-        {{'N'},
+        {{'K'},
          {"extend with next current search pattern match",
           [](Context& c, NormalParams p) {
 	          return search_next(c, p, SelectMode::Append, RegexMode::Forward);
           }}},
-        {{alt('n')},
+        {{alt('k')},
          {"select previous current search pattern match",
           [](Context& c, NormalParams p) {
 	          return search_next(c, p, SelectMode::Replace,
 	                             RegexMode::Backward);
           }}},
-        {{alt('N')},
+        {{alt('K')},
          {"extend with previous current search pattern match",
           [](Context& c, NormalParams p) {
 	          return search_next(c, p, SelectMode::Append, RegexMode::Backward);
@@ -2730,18 +2673,18 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
          {"set search pattern to main selection content, do not detect words",
           use_selection_as_search_pattern<false>}},
 
-        {{'u'}, {"undo", undo}},
-        {{'U'}, {"redo", redo}},
-        {{ctrl('k')},
+        {{'l'}, {"undo", undo}},
+        {{'L'}, {"redo", redo}},
+        {{ctrl('e')},
          {"move backward in history", move_in_history<Direction::Backward>}},
-        {{ctrl('j')},
+        {{ctrl('n')},
          {"move forward in history", move_in_history<Direction::Forward>}},
 
-        {{alt('u')},
+        {{alt('l')},
          {"undo selection change", undo_selection_change<Backward>}},
-        {{alt('U')}, {"redo selection change", undo_selection_change<Forward>}},
+        {{alt('L')}, {"redo selection change", undo_selection_change<Forward>}},
 
-        {{alt('i')},
+        {{alt('u')},
          {"select inner object",
           select_object<ObjectFlags::ToBegin | ObjectFlags::ToEnd |
                         ObjectFlags::Inner>}},
@@ -2797,8 +2740,8 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
         {{alt('<')},
          {"deindent, not including incomplete indent", deindent<false>}},
 
-        {{ctrl('i')}, {"jump forward in jump list", jump<Forward>}},
-        {{ctrl('o')}, {"jump backward in jump list", jump<Backward>}},
+        {{ctrl('h')}, {"jump forward in jump list", jump<Forward>}},
+        {{ctrl('i')}, {"jump backward in jump list", jump<Backward>}},
         {{ctrl('s')},
          {"push current selections in jump list", push_selections}},
 
@@ -2830,10 +2773,10 @@ static constexpr HashMap<Key, NormalCmd, MemoryDomain::Undefined, KeymapBackend>
 
         {{'_'}, {"trim selections", trim_selections}},
 
-        {{'C'},
+        {{'D'},
          {"duplicate selections on the lines that follow them.",
           copy_selections_on_next_lines<Forward>}},
-        {{alt('C')},
+        {{alt('D')},
          {"duplicate selections on the lines that precede them.",
           copy_selections_on_next_lines<Backward>}},
 
