@@ -1,4 +1,3 @@
-.POSIX:
 .SUFFIXES: .cc .opt.o
 
 CXX    = c++
