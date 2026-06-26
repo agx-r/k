@@ -1163,8 +1163,7 @@ private:
 
 	int compute_digit_count(const HighlightContext& context) const {
 		int digit_count = 0;
-		auto cursor_line =
-		    context.context.selections().main().cursor().line;
+		auto cursor_line = context.context.selections().main().cursor().line;
 		LineCount line_count =
 		    (m_relative and m_zero_cursor_line)
 		        ? std::max(abs(context.setup.first_line - cursor_line),

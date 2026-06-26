@@ -1162,11 +1162,11 @@ int main(int argc, char* argv[]) {
 				auto colon = find(name, ':');
 				if (auto line = str_to_int_ifp({name.begin() + 1, colon})) {
 					init_coord = std::max<BufferCoord>(
-					    {0, 0}, {*line,
-					             colon != name.end()
-					                 ? str_to_int_ifp({colon + 1, name.end()})
-					                           .value_or(0)
-					                 : 0});
+					    {0, 0},
+					    {*line, colon != name.end()
+					                ? str_to_int_ifp({colon + 1, name.end()})
+					                      .value_or(0)
+					                : 0});
 					continue;
 				}
 			}
@@ -1199,8 +1199,8 @@ int main(int argc, char* argv[]) {
 				new_files +=
 				    format("edit '{}'", escape(real_path(name), "'", '\''));
 				if (init_coord) {
-					new_files += format(" {} {}", init_coord->line,
-					                    init_coord->column);
+					new_files +=
+					    format(" {} {}", init_coord->line, init_coord->column);
 					init_coord.reset();
 				}
 				new_files += ";";

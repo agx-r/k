@@ -283,8 +283,8 @@ Token parse_percent_token(ParseState& state, bool throw_on_unterminated) {
 		if (throw_on_unterminated and not quoted.terminated) {
 			auto coord = compute_coord({state.str.begin(), start});
 			throw parse_error{format("{}:{}: unterminated string '%{}{}...{}'",
-			                         coord.line, coord.column,
-			                         type_name, it->opening, it->closing)};
+			                         coord.line, coord.column, type_name,
+			                         it->opening, it->closing)};
 		}
 
 		return {type, byte_pos, std::move(quoted.content), quoted.terminated};
@@ -296,9 +296,8 @@ Token parse_percent_token(ParseState& state, bool throw_on_unterminated) {
 		if (throw_on_unterminated and not quoted.terminated) {
 			auto coord = compute_coord({state.str.begin(), start});
 			throw parse_error{format("{}:{}: unterminated string '%{}{}...{}'",
-			                         coord.line, coord.column,
-			                         type_name, opening_delimiter,
-			                         opening_delimiter)};
+			                         coord.line, coord.column, type_name,
+			                         opening_delimiter, opening_delimiter)};
 		}
 
 		return {type, byte_pos, std::move(quoted.content), quoted.terminated};
@@ -518,8 +517,7 @@ void CommandManager::execute(StringView command_line, Context& context,
 				auto coord =
 				    compute_coord(command_line.substr(0_byte, command_pos));
 				error.set_what(format("{}:{}: '{}': {}", coord.line,
-				                      coord.column, params[0],
-				                      error.what()));
+				                      coord.column, params[0], error.what()));
 				throw;
 			}
 

@@ -450,8 +450,8 @@ String selection_to_string(ColumnType column_type, const Buffer& buffer,
 	switch (column_type) {
 	default:
 	case ColumnType::Byte:
-		return format("{}.{},{}.{}", anchor.line, anchor.column,
-		              cursor.line, cursor.column);
+		return format("{}.{},{}.{}", anchor.line, anchor.column, cursor.line,
+		              cursor.column);
 	case ColumnType::Codepoint:
 		return format("{}.{},{}.{}", anchor.line,
 		              buffer[anchor.line].char_count_to(anchor.column),
@@ -496,9 +496,8 @@ Selection selection_from_string(ColumnType column_type, const Buffer& buffer,
 
 	auto compute_coord = [&](int line, int column) -> BufferCoord {
 		if (line < 0 or column < 0)
-			throw runtime_error(
-			    format("coordinate {}.{} does not exist in buffer", line,
-			           column));
+			throw runtime_error(format(
+			    "coordinate {}.{} does not exist in buffer", line, column));
 
 		switch (column_type) {
 		default:
@@ -507,17 +506,15 @@ Selection selection_from_string(ColumnType column_type, const Buffer& buffer,
 		case ColumnType::Codepoint:
 			if (buffer.line_count() <= line or
 			    buffer[line].char_length() <= column)
-				throw runtime_error(
-				    format("coordinate {}.{} does not exist in buffer",
-				           line, column));
+				throw runtime_error(format(
+				    "coordinate {}.{} does not exist in buffer", line, column));
 			return {line, buffer[line].byte_count_to(CharCount{column})};
 		case ColumnType::DisplayColumn:
 			kak_assert(tabstop != -1);
 			if (buffer.line_count() <= line or
 			    column_length(buffer, tabstop, line) <= column)
-				throw runtime_error(
-				    format("coordinate {}.{} does not exist in buffer",
-				           line, column));
+				throw runtime_error(format(
+				    "coordinate {}.{} does not exist in buffer", line, column));
 			return {line, get_byte_to_column(
 			                  buffer, tabstop,
 			                  DisplayCoord{line, ColumnCount{column}})};
