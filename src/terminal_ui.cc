@@ -388,9 +388,9 @@ static constexpr StringView assistant_dilbert[] = {
     R"(      @     )", R"(            )"};
 
 static constexpr StringView assistant_book[] = {
-    R"(       _______  )", R"(      /       /_)", R"(     /  -/-  / /)",
-    R"(    /   /   / / )", R"(   /_______/ /  )", R"(  ((______| /   )",
-    R"(   `"""""""`    )", R"(                )"};
+    R"(       _______   )", R"(      /       /_ )", R"(     /  -/-  / / )",
+    R"(    /   /   / /  )", R"(   /_______/ /   )", R"(  ((______| /    )",
+    R"(   `"""""""`     )", R"(                 )"};
 
 template <typename T> T sq(T x) { return x * x; }
 

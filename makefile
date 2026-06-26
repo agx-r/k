@@ -2,7 +2,7 @@
 
 CXX    = c++
 PREFIX = /usr/local
-BIN    = out/k
+BIN    = out/kpurified
 
 .PATH.cc: src != find src -type d
 

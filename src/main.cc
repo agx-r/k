@@ -49,24 +49,24 @@ struct {
 	unsigned int version;
 	StringView notes;
 } constexpr version_notes[] = {
-    {0, "» local scope for command line evaluation\n"},
+    {0, "- local scope for command line evaluation\n"},
     {20260521,
-     "» support the {+b}\\N{} escape sequence in regex (matches {+b}[^\\n]{})\n"
-     "» count and register forwarding to user modes\n"
-     "» back switch added for the arrange-buffers command\n"},
+     "- support the {+b}\\N{} escape sequence in regex (matches {+b}[^\\n]{})\n"
+     "- count and register forwarding to user modes\n"
+     "- back switch added for the arrange-buffers command\n"},
     {20260412,
-     "» {+u}finaleol{} option to preserve files with no final end-of-line\n"
-     "» {+b}%val\\{buffile}{} is now empty for scratch buffers\n"
-     "» {+b}FocusIn{}/{+b}FocusOut{} events on suspend\n"
-     "» {+u}number-lines -full-relative{} switch to keep a smaller line number "
+     "- {+u}finaleol{} option to preserve files with no final end-of-line\n"
+     "- {+b}%val\\{buffile}{} is now empty for scratch buffers\n"
+     "- {+b}FocusIn{}/{+b}FocusOut{} events on suspend\n"
+     "- {+u}number-lines -full-relative{} switch to keep a smaller line number "
      "gutter\n"
-     "» {+b}<a-I>{} and {+b}<a-A>{} to select nested text objects\n"
-     "» {+b}kak -C <session>{} to connect-or-create a session\n"},
+     "- {+b}<a-I>{} and {+b}<a-A>{} to select nested text objects\n"
+     "- {+b}kak -C <session>{} to connect-or-create a session\n"},
     {20250603,
-     "» kak_* appearing in shell arguments will be added to the environment\n"
-     "» {+U}double underline{} support\n"
-     "» {+u}git apply{} can stage/revert selected changes to current buffer\n"
-     "» {+u}exec/eval -client{} accepts '*' and comma separated list\n"}};
+     "- kak_* appearing in shell arguments will be added to the environment\n"
+     "- {+U}double underline{} support\n"
+     "- {+u}git apply{} can stage/revert selected changes to current buffer\n"
+     "- {+u}exec/eval -client{} accepts '*' and comma separated list\n"}};
 
 static_assert(sizeof(version_notes) / sizeof(version_notes[0]) <=
                   4 - (version_notes[0].version != 0 ? 1 : 0),
@@ -81,13 +81,13 @@ void show_startup_info(Client* local_client, int last_version) {
 			continue;
 
 		if (not version)
-			info.push_back({"• Development version", version_face});
+			info.push_back({"* Development version", version_face});
 		else {
 			const auto year = version / 10000;
 			const auto month = (version / 100) % 100;
 			const auto day = version % 100;
 			info.push_back(
-			    {format("• Kakoune v{}.{:02}.{:02}", year, month, day),
+			    {format("* Kakoune v{}.{:02}.{:02}", year, month, day),
 			     version_face});
 		}
 
